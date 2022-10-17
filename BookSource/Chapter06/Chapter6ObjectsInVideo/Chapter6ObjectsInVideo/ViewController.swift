@@ -119,8 +119,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     func drawMLKitResults(boundingBox: CGRect, imageWidth: CGFloat, imageHeight: CGFloat,  label: String) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-        annotationOverlayView.subviews.forEach { $0.removeFromSuperview() }
-        annotationOverlayView.layer.sublayers = nil // remove all the old recognized objects
 
         let textLayer = createTextSubLayerInBounds(boundingBox, imageWidth: imageWidth, imageHeight: imageHeight, identifier: label)
         
@@ -154,10 +152,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
         image.orientation = orientation
         objectDetector.process(image) {objects, error in
-            guard error == nil else {
-                self.clearMLKitResults()
-                return
-            }
+            self.clearMLKitResults()
             for object in objects!{
                 let frame = object.frame
                 let label = object.trackingID?.stringValue
